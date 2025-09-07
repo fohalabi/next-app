@@ -15,6 +15,10 @@ export default async function UserPage({
 
     const { userId } = await params;
     const user = await fetchUser(userId);
+
+    if (!user) {
+        notFound();
+    }
     return (
         <div>
             <h1>{user.name}</h1>
