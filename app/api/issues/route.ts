@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import prisma from '@prisma/client';
+// import prisma from '@/lib/prisma'; // commented out temporarily
 
 const createIssueSchema = z.object({
     title: z.string().min(1).max(255),
@@ -9,15 +9,24 @@ const createIssueSchema = z.object({
 
 export async function POST(request: NextRequest) {
     const body = await request.json();
-    // Here you would typically handle the creation of a new issue
     const validation = createIssueSchema.safeParse(body);
+    
     if (!validation.success) {
-        return NextResponse.json(validation.error.errors, {status: 400});
+        return NextResponse.json(validation.error.issues, {status: 400});
     }
 
-    const newIssue = await prisma.issue.create({
-        data: { title: body.title, description: body.description}
-    });
+    // commented out the Prisma code temporarily
+    // const newIssue = await prisma.issue.create({
+    //     data: { title: body.title, description: body.description}
+    // });
 
-    return NextResponse.json(newIssue, {status: 201});
+    // Return a test response
+    return NextResponse.json({ 
+        message: "API is working without database!",
+        receivedData: {
+            title: body.title,
+            description: body.description
+        },
+        timestamp: new Date().toISOString()
+    }, {status: 201});
 }
